@@ -20,14 +20,6 @@ app.get('/', (req, res) => {
         .catch(err => res.send(err))
 });
 
-//users test
-let users = [
-    {
-        username: 'admin',
-        email: 'admin',
-        password: 'admin'
-    }
-]
 let categories = [
     {
         name:'Restaurants',
@@ -68,22 +60,25 @@ app.get('/stores/:indexCategory/:indexStore', (req, res) => {
     res.send(categories[req.params.indexCategory])
 })
 
-app.post('/login', (req, res) => {
-    console.log(req.body);
+app.post('/login', async (req, res) => {
     if(!req.body.email || !req.body.password){
         res.send('fill all the fields')
         return
     }
 
-    const user = users.find(user => user.email === req.body.email);
-    if (!user || user.password !== req.body.password) {
-        res.send('invalid credentials')
+    let user = await clients.find({"email": req.body.email});
+    if (user.length == 0) {
+        res.send('user not exists ')
         return
     }
 
-    req.session.user = user;
+    if (user[0].password == req.body.password) {
+        req.session.user = user;
+        res.send('login ' + JSON.stringify(user));
+    }else{
+        res.status(500).send("error credential")
+    }
 
-    res.send('login ' + JSON.stringify(user));
 });
 
 app.get('/logout', (req, res) => {
@@ -91,27 +86,30 @@ app.get('/logout', (req, res) => {
     res.send('logged out')
 })
 
-app.post('/signin', (req, res) => {
+app.post('/signin', async (req, res) => {
     if(!req.body.username || !req.body.email || !req.body.password){
         res.send('fill all the fields')
         return;
     }
     
-    let user = users.find(user => user.email === req.body.email);
-    if (user) {
-        res.send('user already exists')
+    let user = await clients.find({"email": req.body.email});
+    console.log(user.length);
+    if (user.length > 0) {
+        res.send('user already exists ' + user)
         return
     }
-    user = {
+
+    const newClient = new clients({
         username: req.body.username,
         email: req.body.email,
         password: req.body.password
-    }
-
-    users.push(user)
-    req.session.user = user
-
-    res.send('signIn ' + JSON.stringify(user))
+    })
+    newClient.save()
+        .then(result => {
+            req.session.user = result  
+            res.send('signIn ' + result.id)
+        })
+        .catch(err => {res.status(500).send(err)})
 })
 
 app.get('/history', (req, res) => {
