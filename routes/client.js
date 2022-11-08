@@ -49,19 +49,19 @@ app.post('/signin', async (req, res) => {
 })
 app.post('/login', async (req, res) => {
     if(!req.body.email || !req.body.password){
-        res.send('fill all the fields')
+        res.status(500).send('fill all the fields')
         return
     }
 
     let user = await clients.find({"email": req.body.email});
     if (user.length == 0) {
-        res.send('user not exists ')
+        res.status(500).send('user not exists ')
         return
     }
 
     if (user[0].password == req.body.password) {
         req.session.user = user;
-        res.send('login ' + JSON.stringify(user));
+        res.send('login ' + user.username);
     }else{
         res.status(500).send("error credential")
     }
@@ -71,6 +71,8 @@ app.get('/logout', (req, res) => {
     req.session.destroy()
     res.send('logged out')
 })
+
+//TODO: Auth APIs
 
 app.get('/history', (req, res) => {
     const session = req.session
@@ -82,5 +84,9 @@ app.get('/history', (req, res) => {
     }
     res.send(session.user.username);
 })
+
+//TODO: info order
+
+//TODO: create new order
 
 module.exports = app

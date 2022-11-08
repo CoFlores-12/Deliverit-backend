@@ -13,6 +13,11 @@ app.use(express.static(__dirname));
 //routes
 app.use('/', home);
 app.use('/client', client);
+//TODO: route administration
+//TODO: route delivery man
+
+//TODO: create new model for delivery man
+//TODO: create new model for orders
 
 //start server
 app.listen(app.get('port'), () => {
