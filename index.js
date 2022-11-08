@@ -1,6 +1,7 @@
 const express  = require('express');
 const app      = express();
 const client   = require('./routes/client');
+const home   = require('./routes/home');
 const database = require('./modules/database')
 
 //config
@@ -10,6 +11,7 @@ app.set('port', 3000);
 app.use(express.static(__dirname));
 
 //routes
+app.use('/', home);
 app.use('/client', client);
 
 //start server

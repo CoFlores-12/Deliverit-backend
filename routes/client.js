@@ -4,6 +4,7 @@ const session = require('express-session')
 const cookieP = require("cookie-parser")
 const app     = express()
 const clients = require('../models/clients')
+const queries = require('../modules/queries')
 
 app.use(bp.json())
 app.use(express.urlencoded({ extended: true }))
@@ -14,52 +15,38 @@ app.use(session({
     saveUninitialized: true
 }));
 
+//TODO: remove this route
 app.get('/', (req, res) => {
-    clients.find()
+    queries.getFromDB(clients, {})
         .then(results => res.send(results))
-        .catch(err => res.send(err))
+        .catch(err => res.status(500).send(err))
 });
 
-let categories = [
-    {
-        name:'Restaurants',
-        color:'#ff9e00',
-        icon:'/assets/img/iconos/comida-rapida.png'
-    },
-    {
-        name:'Supermarket',
-        color:'#691b9a',
-        icon:'/assets/img/iconos/tienda.png'
-    },
-    {
-        name:'Drinks',
-        color:'#1b9a8f',
-        icon:'/assets/img/iconos/coctel.png'
-    },
-    {
-        name:'Health',
-        color:'#558b2f',
-        icon:'/assets/img/iconos/salud.png'
-    },
-    {
-        name:'Tech',
-        color:'#c50b0b',
-        icon:'/assets/img/iconos/gadgets.png'
+app.post('/signin', async (req, res) => {
+    if(!req.body.username || !req.body.email || !req.body.password){
+        res.send('fill all the fields')
+        return;
     }
-]
+    
+    let user = await clients.find({"email": req.body.email});
+    if (user.length > 0) {
+        res.send('user already exists ')
+        return
+    }
 
-app.get('/categories', (req, res) => {
-    res.send(categories)
+    const data = {
+        username: req.body.username,
+        email: req.body.email,
+        password: req.body.password
+    }
+
+    queries.insertInToDB(clients, data)
+        .then(result => {
+            req.session.user = result  
+            res.send('signIn ' + result.id)
+        })
+        .catch(err => {res.status(500).send(err)})
 })
-
-app.get('/stores/:indexCategory', (req, res) => {
-    res.send(categories[req.params.indexCategory])
-})
-
-app.get('/stores/:indexCategory/:indexStore', (req, res) => {
-    res.send(categories[req.params.indexCategory])
-})
-
 app.post('/login', async (req, res) => {
     if(!req.body.email || !req.body.password){
         res.send('fill all the fields')
@@ -80,36 +67,9 @@ app.post('/login', async (req, res) => {
     }
 
 });
-
 app.get('/logout', (req, res) => {
     req.session.destroy()
     res.send('logged out')
-})
-
-app.post('/signin', async (req, res) => {
-    if(!req.body.username || !req.body.email || !req.body.password){
-        res.send('fill all the fields')
-        return;
-    }
-    
-    let user = await clients.find({"email": req.body.email});
-    console.log(user.length);
-    if (user.length > 0) {
-        res.send('user already exists ' + user)
-        return
-    }
-
-    const newClient = new clients({
-        username: req.body.username,
-        email: req.body.email,
-        password: req.body.password
-    })
-    newClient.save()
-        .then(result => {
-            req.session.user = result  
-            res.send('signIn ' + result.id)
-        })
-        .catch(err => {res.status(500).send(err)})
 })
 
 app.get('/history', (req, res) => {
