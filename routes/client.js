@@ -15,7 +15,9 @@ app.use(session({
 }));
 
 app.get('/', (req, res) => {
-    clients.find().then(results => res.send(results))
+    clients.find()
+        .then(results => res.send(results))
+        .catch(err => res.send(err))
 });
 
 //users test
