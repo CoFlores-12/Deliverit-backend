@@ -74,6 +74,7 @@ app.get('/logout', (req, res) => {
 
 //TODO: Auth APIs
 
+//TODO: history
 app.get('/history', (req, res) => {
     const session = req.session
     try {
