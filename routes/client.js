@@ -4,6 +4,8 @@ const session = require('express-session')
 const cookieP = require("cookie-parser")
 const app     = express()
 const clients = require('../models/clients')
+const orders  = require('../models/orders')
+//const dealers  = require('../models/dealers')
 const queries = require('../modules/queries')
 
 app.use(bp.json())
@@ -13,7 +15,7 @@ app.use(session({
     secret: 'IS410',
     resave: true,
     saveUninitialized: true
-}));
+}))
 
 //TODO: remove this route
 app.get('/', (req, res) => {
@@ -75,16 +77,6 @@ app.get('/logout', (req, res) => {
 //TODO: Auth APIs
 
 //TODO: history
-app.get('/history', (req, res) => {
-    const session = req.session
-    try {
-        session.user.username;
-    } catch (error) {
-        res.status(500).send('User no logger')
-        return
-    }
-    res.send(session.user.username);
-})
 
 //TODO: info order
 

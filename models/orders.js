@@ -11,8 +11,16 @@ const schema = new mongoose.Schema({
     },
     status:    String,
     store:     String,
-    client:    mongoose.SchemaTypes.ObjectId,
-    dealer:    mongoose.SchemaTypes.ObjectId,
+    client:    {
+        name: String,
+        email: String,
+        tel: String
+    },
+    dealer:     {
+        name: String,
+        email: String,
+        tel: String
+    },
     products:  mongoose.SchemaTypes.Mixed,
     locations: mongoose.SchemaTypes.Mixed
 })
