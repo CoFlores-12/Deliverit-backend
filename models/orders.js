@@ -10,7 +10,9 @@ const schema = new mongoose.Schema({
         retries: 4
     },
     status:    String,
-    store:     String,
+    service: Number,
+    total: Number,
+    date: String,
     client:    {
         name: String,
         email: String,
