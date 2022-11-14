@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+    <script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
+    <script>
+  async function logger() {
+    const data = {
+  "email": "test4@unah.hn",
+  "password": "tester"
+}
+    await $.post("http://localhost:3000/client/login",
+  data,
+  function(data, status){
+    console.log("Data: " + data + "\nStatus: " + status);
+    //createOrder()
+  });
+  }
+
+  async function createOrder() {
+   await $.post("http://localhost:3000/client/CreateOrder",
+    {
+  "service": 2.45,
+  "total": 15.44,
+  "date": "20:29 - 13/11/22",
+  "products": [
+    {
+      "name": "Product 1",
+      "price": 12.99,
+      "store": "Store 13",
+      "cant": 1
+    }
+  ],
+  "locations": [
+    {
+      "lat": -48,
+      "log": 85
+    },
+    {
+      "lat": -45,
+      "log": 86
+    }
+  ]
+}
+  ,
+  function(data, status){
+    console.log("Data: " + data + "\nStatus: " + status);
+    
+  });
+  }
+
+
+(async ()=>{
+   await logger()
+})();
+
+    </script>
+</body>
+</html>
