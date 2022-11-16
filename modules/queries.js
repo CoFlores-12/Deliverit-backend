@@ -5,7 +5,7 @@ class queries {
      * @param data - The JSON data
      * method Create
      */
-     async insertInToDB(schema, data) {
+    async insertInToDB(schema, data) {
         const newDocument = new schema(data)
         return await newDocument.save()
     }

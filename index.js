@@ -3,9 +3,6 @@ const app      = express();
 const client   = require('./routes/client');
 const home     = require('./routes/home');
 const database = require('./modules/database');
-const roundsman= require('./routes/roundsman');
-
-
 //config
 app.set('port', 3000);
 
@@ -23,6 +20,6 @@ app.use('/roundsman', roundsman);
 
 //start server
 app.listen(app.get('port'), () => {
-    console.log("server in port:", 3000);
+    console.log("server in port:", app.get('port'));
     console.log("connecting to database...");
 });
