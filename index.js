@@ -3,6 +3,7 @@ const app      = express();
 const client   = require('./routes/client');
 const home     = require('./routes/home');
 const database = require('./modules/database');
+const roundsman = require('./models/roundsman');
 //config
 app.set('port', 3000);
 

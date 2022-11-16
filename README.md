@@ -1,4 +1,8 @@
 # Deliverit-backend
+## Integrantes
+- Oscar Josue Ordoñez Amador- 20201002703
+- Cesar Obeth Flores Flores - 20201001034
+
 
 ## Database
 MongoDB 6.0.2 Community Server
@@ -13,3 +17,5 @@ sudo service mongod start
 ```
 sudo service mongod stop
 ```
+
+

@@ -15,11 +15,8 @@ app.use(session({
     saveUninitialized: true
 }));
 
-app.get('/', (req, res) => {
-    res.send('Welcome Roundman');
-});
-
 app.post('/register',  async (req, res) => {
+    //TODO: use try/catch
     if (!req.body.email || !req.body.password || !req.body.phoneNumber || !req.body.name) {
         res.status(500).send('fields empty')
     }
@@ -45,8 +42,15 @@ app.post('/register',  async (req, res) => {
         .catch(err => {res.status(500).send(err)})
 });
 
+//TODO: login
+//TODO: get orders in my name in progress
+//TODO: get orders availables
+//TODO: get history orders delivered
+//TODO: get info a order specific
+//TODO: change status order taked 
+//TODO: change status order delivered
 
-app.get('/orders/:id', (req, res) => {
+app.get('/orders/:id', async (req, res) => {
     res.send('your order is: ' + req.params.id)
 });
 

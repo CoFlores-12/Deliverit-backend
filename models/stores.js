@@ -4,12 +4,7 @@ const schema = new mongoose.Schema({
     name: String,
     logo: String,
     banner: String,
-    description: String,
-    category: String,
-    location: {
-        lat: String,
-        long: String
-    }
+    category: String
 })
 
 module.exports = mongoose.model('stores', schema)
