@@ -1,8 +1,10 @@
 const express  = require('express');
 const app      = express();
 const client   = require('./routes/client');
-const home   = require('./routes/home');
-const database = require('./modules/database')
+const home     = require('./routes/home');
+const database = require('./modules/database');
+const roundsman= require('./routes/roundsman');
+
 
 //config
 app.set('port', 3000);
@@ -14,7 +16,7 @@ app.use(express.static(__dirname));
 app.use('/', home);
 app.use('/client', client);
 //TODO: route administration
-//TODO: route delivery man
+app.use('/roundsman', roundsman);
 
 //TODO: create new model for delivery man
 //TODO: create new model for orders
