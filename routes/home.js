@@ -1,8 +1,11 @@
 const express    =  require('express')
 const app        = express()
+const cors       = require('cors')
 const categories = require('../models/categories')
 const stores     = require('../models/stores')
 const queries    = require('../modules/queries')
+
+app.use(cors())
 
 //categories
 app.get('/categories', (req, res) => {
