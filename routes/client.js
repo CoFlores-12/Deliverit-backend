@@ -27,7 +27,7 @@ app.post('/signin', async (req, res) => {
             return;
         }
     } catch (error) {
-        res.status(403).send('Unauthenticated User')
+        res.status(400).send('Bad Request')
     }
     
     let user = await clientsSchema.find({"email": req.body.email});
@@ -44,6 +44,7 @@ app.post('/signin', async (req, res) => {
 
     queries.insertInToDB(clientsSchema, data)
         .then(result => {
+            res.setHeader('Set-Cookie', 'id='+result._id);
             res.send(result)
         })
         .catch(err => {res.status(500).send(err)})
@@ -55,7 +56,7 @@ app.post('/login', async (req, res) => {
             return;
         }
     } catch (error) {
-        res.status(403).send('Unauthenticated User')
+        res.status(400).send('Bad Request')
     }
 
     let user = await clientsSchema.find({"email": req.body.email});
@@ -65,6 +66,7 @@ app.post('/login', async (req, res) => {
     }
 
     if (user[0].password == req.body.password) {
+        res.setHeader('Set-Cookie', 'id='+user[0]._id);
         res.send(user[0]);
     }else{
         res.status(400).send("error credential")
@@ -75,24 +77,33 @@ app.post('/login', async (req, res) => {
 //TODO: Auth APIs
 
 app.get('/orders', async (req, res) => {
-    try {req.cookies.id} catch (error) {
+    try {if(!req.cookies.id){throw new Error("oops")}
+    }  catch (error) {
         res.status(403).send('Unauthenticated User')
+        return
     }
-    const orders = await ordersSchema.find({"client._id": req.cookies.id});
-    res.send(JSON.stringify(orders))
+    const orders = await ordersSchema.find({"client.id": req.cookies.id});
+    res.send(orders)
 });
 
 app.get('/orders/:idOrder', async (req, res) => {
-    try {req.params.idOrder} catch (error) {
+    try {if(!req.params.idOrder){throw new Error("oops")}
+    }  catch (error) {
         res.status(400).send('Bad Request')
+        return;
     }
     const orders = await ordersSchema.find({"id": req.params.idOrder});
-    res.send(JSON.stringify(orders))
+    res.send(orders)
 });
 
 app.post('/CreateOrder', async (req, res) => {
-    try {req.cookies.id} catch (error) {
+    try {
+        if(!req.cookies.id){
+            throw new Error("oops");
+        }
+    }  catch (error) {
         res.status(403).send('Unauthenticated User')
+        return;
     }
     const user = await clientsSchema.find({"_id": req.cookies.id});
     const ID = require("nodejs-unique-numeric-id-generator")
@@ -118,7 +129,7 @@ app.post('/CreateOrder', async (req, res) => {
         locations: req.body.locations
     }
     queries.insertInToDB(ordersSchema, data)
-    res.send(JSON.stringify(data));
+    res.send(data);
 });
 
 module.exports = app
