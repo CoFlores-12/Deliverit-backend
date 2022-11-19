@@ -4,14 +4,7 @@ const schema = new mongoose.Schema({
     name: String,
     logo: String,
     banner: String,
-    category: String,
-    products: [
-        {
-            img: String,
-            price: Number,
-            description: String
-        }
-    ]
+    category: String
 })
 
 module.exports = mongoose.model('stores', schema)
