@@ -73,15 +73,6 @@ app.post('/login', async (req, res) => {
 });
 
 //TODO: Auth APIs
-//TODO: get stores of a category
-//TODO: get products of a store
-
-app.get('/test', (req, res) => {
-    try {req.cookies.id} catch (error) {
-        res.status(403).send('Unauthenticated User')
-    }
-    res.send(req.cookies.id)
-});
 
 app.get('/orders', async (req, res) => {
     try {req.cookies.id} catch (error) {
