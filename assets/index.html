@@ -10,17 +10,23 @@
     
     <script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
     <script>
-  async function logger() {
-    const data = {
-  "email": "test4@unah.hn",
-  "password": "tester"
-}
-    await $.post("http://localhost:3000/client/login",
-  data,
-  function(data, status){
-    console.log("Data: " + data + "\nStatus: " + status);
-    //createOrder()
-  });
+  function logger() {
+      $.post("http://localhost:3000/client/login", {
+              "email": "admin",
+              "password": "admin"
+          }).done(function (response) {
+              console.log(response);
+              document.cookie = 'username='+response.username+'; expire=31536000;';
+              document.cookie = 'id='+response._id+'; expire=31536000;';;
+              createOrder()
+              $.get("http://localhost:3000/client/test",
+                function (data, textStatus, jqXHR) {
+                  console.log(data);
+                },
+              );
+          }).fail(function(xhr, status, res) {
+
+          })
   }
 
   async function createOrder() {
@@ -29,6 +35,10 @@
   "service": 2.45,
   "total": 15.44,
   "date": "20:29 - 13/11/22",
+  "payment": {
+    "credit_card_number": "3714 496353 98431",
+    "credit_card_name": "Cesar Obeth Flores"
+  },
   "products": [
     {
       "name": "Product 1",
@@ -53,6 +63,8 @@
     console.log("Data: " + data + "\nStatus: " + status);
     
   });
+
+    
   }
 
 
