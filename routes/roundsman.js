@@ -63,7 +63,29 @@ app.post('/register',  async (req, res) => {
 });
 
 //TODO: login
+app.post('/login',async(req, res)=>{
+    
+    try{
+        if(!req.body.name || !res.body.password){
+            res.status(400).send('Fill all the fields')
+            return;
+        }
+    }catch(error){
+        res.status(400).send('Bad Request')
+    }
 
+    let user = await roundsmanSchema.find({"username": req.body.name});
+    if (user.length==0){
+        res.status(400).send('User  is not found')
+        return;
+    }
+    if(user[0].password==req.body.password){
+        res.setHeader('Set-Cookie', 'id='+user[0]._id);
+        res.send(user[0]);   
+    }else{
+        res.status(400).send("error credentials")
+    }
+})
 //TODO: get orders in my name in progress
 //TODO: get orders availables
 //TODO: get history orders delivered
