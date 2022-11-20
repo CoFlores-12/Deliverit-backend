@@ -36,15 +36,19 @@ app.use(
 }))
 
 app.post('/register',  async (req, res) => {
-    //TODO: use try/catch
-    if (!req.body.email || !req.body.password || !req.body.phoneNumber || !req.body.name) {
-        res.status(500).send('fields empty')
+    
+    try {
+        if(!req.body.name || !req.body.email || !req.body.password || !req.body.phoneNumber){
+            res.status(400).send('Fill all the Fields');
+            return;
+        }
+        
+    } catch (error) {
+        res.status(400).send('Bad Request')
+        
     }
-
-    const userTMP = await queries.getFromDB(roundsmanSchema, {"email": req.body.email})
-    if (userTMP.length != 0) {
-        res.status(500).send('user exist')
-    }
+    let user = await roundsmanSchema.find()
+    
 
     const data = {
         name:req.body.name,
@@ -62,7 +66,6 @@ app.post('/register',  async (req, res) => {
         .catch(err => {res.status(500).send(err)})
 });
 
-//TODO: login
 app.post('/login',async(req, res)=>{
     
     try{
