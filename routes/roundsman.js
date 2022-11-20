@@ -130,7 +130,7 @@ app.get('/hystoryOrders', async (req, res)=>{
     const orders = await ordersSchema.find({"Order history ": req.params.ordersSchema})
     res.send(orders);
 })
-//TODO: get info a order specific
+// get info a order specific
 app.get('/getOrderInfo/:idOrder', async (req, res)=>{
     try {
         if(!req.params.idOrder ){
@@ -146,8 +146,6 @@ app.get('/getOrderInfo/:idOrder', async (req, res)=>{
 //TODO: change status order taked 
 //TODO: change status order delivered
 
-app.get('/orders/:id', async (req, res) => {
-    res.send('your order is: ' + req.params.id)
-});
+
 
 module.exports = app
