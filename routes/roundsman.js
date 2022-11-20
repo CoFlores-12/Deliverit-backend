@@ -5,7 +5,10 @@ const queries    = require('../modules/queries')
 const roundsmanSchema = require('../models/roundsman')
 const session = require('express-session')
 const cookieP = require("cookie-parser")
+const cors =require('cors')
 
+
+/*
 app.use(bp.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(cookieP())
@@ -14,6 +17,23 @@ app.use(session({
     resave: true,
     saveUninitialized: true
 }));
+*/
+app.use(
+    cors({
+      credentials: true,
+      origin: true,
+    }),
+  );
+  app.use(session({
+    secret: 'IS410',
+    saveUninitialized: true,
+    resave:false,
+    secure: false,
+    cookie:{
+        secure: false,
+        httpOnly: false
+    }
+}))
 
 app.post('/register',  async (req, res) => {
     //TODO: use try/catch
@@ -43,6 +63,7 @@ app.post('/register',  async (req, res) => {
 });
 
 //TODO: login
+
 //TODO: get orders in my name in progress
 //TODO: get orders availables
 //TODO: get history orders delivered
