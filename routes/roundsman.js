@@ -91,7 +91,7 @@ app.post('/login',async(req, res)=>{
         res.status(400).send("error credentials")
     }
 })
-//TODO: get orders in my name in progress
+// get orders in my name in progress
 app.get('/getOrder', async (req, res)=>{
     try {
         if(!req.params.nameOrder){
@@ -105,7 +105,31 @@ app.get('/getOrder', async (req, res)=>{
     res.send(orders);
 })
 //TODO: get orders availables
+app.get('/getOrder', async (req, res)=>{
+    try {
+        if(!req.params.status ){
+            throw new Error("Order isn't exists")
+        }
+    } catch (error) {
+        res.status(400).send('Bad Request');
+        return;
+    }
+    const orders = await ordersSchema.find({"Orders avalaibles": req.params.nameOrder})
+    res.send(orders);
+})
 //TODO: get history orders delivered
+app.get('/getOrder', async (req, res)=>{
+    try {
+        if(!req.params.status ){
+            throw new Error("You don't have available orders")
+        }
+    } catch (error) {
+        res.status(400).send('Bad Request');
+        return;
+    }
+    const orders = await ordersSchema.find({"Orders avalaibles": req.params.nameOrder})
+    res.send(orders);
+})
 //TODO: get info a order specific
 //TODO: change status order taked 
 //TODO: change status order delivered
