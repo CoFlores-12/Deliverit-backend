@@ -6,6 +6,8 @@ const roundsmanSchema = require('../models/roundsman')
 const session = require('express-session')
 const cookieP = require("cookie-parser")
 const cors =require('cors')
+const orders = require('../models/orders')
+const ordersSchema = require('../models/orders')
 
 
 /*
@@ -90,6 +92,18 @@ app.post('/login',async(req, res)=>{
     }
 })
 //TODO: get orders in my name in progress
+app.get('/getOrder', async (req, res)=>{
+    try {
+        if(!req.params.nameOrder){
+            throw new Error("Order isn't exists")
+        }
+    } catch (error) {
+        res.status(400).send('Bad Request');
+        return;
+    }
+    const orders = await ordersSchema.find({"name": req.params.nameOrder})
+    res.send(orders);
+})
 //TODO: get orders availables
 //TODO: get history orders delivered
 //TODO: get info a order specific
