@@ -92,7 +92,7 @@ app.post('/login',async(req, res)=>{
     }
 })
 // get orders in my name in progress
-app.get('/getOrder', async (req, res)=>{
+app.get('/ordersName', async (req, res)=>{
     try {
         if(!req.params.nameOrder){
             throw new Error("Order isn't exists")
@@ -104,21 +104,8 @@ app.get('/getOrder', async (req, res)=>{
     const orders = await ordersSchema.find({"name": req.params.nameOrder})
     res.send(orders);
 })
-//TODO: get orders availables
-app.get('/getOrder', async (req, res)=>{
-    try {
-        if(!req.params.status ){
-            throw new Error("Order isn't exists")
-        }
-    } catch (error) {
-        res.status(400).send('Bad Request');
-        return;
-    }
-    const orders = await ordersSchema.find({"Orders avalaibles": req.params.nameOrder})
-    res.send(orders);
-})
-//TODO: get history orders delivered
-app.get('/getOrder', async (req, res)=>{
+// get orders availables
+app.get('/ordersAvailables', async (req, res)=>{
     try {
         if(!req.params.status ){
             throw new Error("You don't have available orders")
@@ -127,10 +114,35 @@ app.get('/getOrder', async (req, res)=>{
         res.status(400).send('Bad Request');
         return;
     }
-    const orders = await ordersSchema.find({"Orders avalaibles": req.params.nameOrder})
+    const orders = await ordersSchema.find({"Orders avalaibles": req.params.status})
+    res.send(orders);
+})
+// get history orders delivered
+app.get('/hystoryOrders', async (req, res)=>{
+    try {
+        if(!req.params.status ){
+            throw new Error("You don't have  orders")
+        }
+    } catch (error) {
+        res.status(400).send('Bad Request');
+        return;
+    }
+    const orders = await ordersSchema.find({"Order history ": req.params.ordersSchema})
     res.send(orders);
 })
 //TODO: get info a order specific
+app.get('/getOrderInfo/:idOrder', async (req, res)=>{
+    try {
+        if(!req.params.idOrder ){
+            throw new Error("Order isn't exists")
+        }
+    } catch (error) {
+        res.status(400).send('Bad Request');
+        return;
+    }
+    const orders = await ordersSchema.find({"Order": req.params.idOrder})
+    res.send(orders);
+})
 //TODO: change status order taked 
 //TODO: change status order delivered
 
