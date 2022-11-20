@@ -1,11 +1,10 @@
 class queries {
-    //TODO: to complete CRUD
     /**
      * @param schema - The mongoose Schema
      * @param data - The JSON data
      * method Create
      */
-    async insertInToDB(schema, data) {
+    async Create(schema, data) {
         const newDocument = new schema(data)
         return await newDocument.save()
     }
@@ -15,12 +14,28 @@ class queries {
      * @param filter - The JSON filter
      * method Read
      */
-    async getFromDB(schema, filter) {
+    async Read(schema, filter) {
         return await schema.find(filter)
     }
 
-    //TODO: create method for Update
-    //TODO: create method for Delete
+    /**
+     * @param schema - The mongoose Schema
+     * @param filter - The JSON filter
+     * @param newData - data to update
+     * method Update
+     */
+     async Update(schema, filter,  newData) {
+        return await schema.updateOne(filter, newData, {upsert: false})
+    }
+    
+    /**
+     * @param schema - The mongoose Schema
+     * @param filter - The JSON filter
+     * method Delete
+     */
+     async Delete(schema, filter) {
+        return await schema.deleteOne(filter)
+    }
 }
 
 

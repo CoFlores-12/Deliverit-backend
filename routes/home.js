@@ -9,7 +9,7 @@ app.use(cors())
 
 //categories
 app.get('/categories', (req, res) => {
-    queries.getFromDB(categorieschema, {})
+    queries.Read(categorieschema, {})
         .then(result => res.send(result))
         .catch(err => res.status(500).send(err))
 })
@@ -28,7 +28,7 @@ app.get('/store/:idStore', (req, res) => {
     try {req.params.idStore} catch (error) {
         res.status(400).send('Bad Request')
     }
-    queries.getFromDB(storeschema, {"_id": req.params.idStore})
+    queries.Read(storeschema, {"_id": req.params.idStore})
         .then(result => res.send(result))
         .catch(err => res.status(500).send(err))
 });

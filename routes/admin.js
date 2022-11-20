@@ -3,13 +3,16 @@ const storesSchema    = require('../models/stores')
 const clientsSchema = require('../models/clients')
 const ordersSchema = require('../models/orders')
 const queries    = require('../modules/queries')
-const express  =  require('express')
-const app    = express()
+const bp       = require('body-parser')
+const express =  require('express')
+const app   = express()
 
-//TODO: RUD clients
+app.use(bp.json())
+app.use(express.urlencoded({ extended: true }))
+
 //clients request
 app.get('/clients', (req, res) => {
-    queries.getFromDB(clientsSchema, {})
+    queries.Read(clientsSchema, {})
         .then(result => {
             res.send(result)
         })
@@ -26,12 +29,43 @@ app.get('/client/:id', async (req, res) => {
     const client = await clientsSchema.find({"_id": req.params.id});
     res.send(client)
 });
+app.put('/updateClient', async (req, res) => {
+    try {
+        if(!req.body.username || !req.body.email || !req.body.password || !req.body.idClient){
+            res.status(400).send('fill all the fields')
+            return;
+        }
+    } catch (error) {
+        res.status(400).send('Bad Request')
+    }
+
+    queries.Update(clientsSchema, {"_id": req.body.idClient}, {
+        username: req.body.username,
+        email: req.body.email,
+        password: req.body.password
+    })
+        .then(result => {res.send(result)})
+        .catch(err => {res.status(500).send(err)})
+});
+app.delete('/deleteClient', (req, res) => {
+    try {
+        if(!req.body.idClient){
+            res.status(400).send('fill all the fields')
+            return;
+        }
+    } catch (error) {
+        res.status(400).send('Bad Request')
+    }
+
+    queries.Delete(clientsSchema, {"_id": req.body.idClient})
+        .then(result => {res.send(result)})
+        .catch(err => {res.status(500).send(err)})
+});
 //clients request end
 
-//TODO: CRUD stores
 //stores request
 app.get('/stores', (req, res) => {
-    queries.getFromDB(storesSchema, {})
+    queries.Read(storesSchema, {})
         .then(result => {
             res.send(result)
         })
@@ -39,9 +73,67 @@ app.get('/stores', (req, res) => {
             res.status(500).send(err)
         })
 });
+
+app.post('/newStore', async (req, res) => {
+    try {
+        if(!req.body.name || !req.body.logo || !req.body.banner || !req.body.category){
+            res.status(400).send('fill all the fields')
+            return;
+        }
+    } catch (error) {
+        res.status(400).send('Bad Request')
+    }
+
+    const data = {
+        name: req.body.name,
+        logo: req.body.logo,
+        banner: req.body.banner,
+        category: req.body.category,
+    }
+
+    queries.Create(storesSchema, data)
+        .then(result => {
+            res.send(result)
+        })
+        .catch(err => {res.status(500).send(err)})
+});
+
+app.put('/updateStore', async (req, res) => {
+    try {
+        if(!req.body.name || !req.body.logo || !req.body.banner || !req.body.category || !req.body.idStore){
+            res.status(400).send('fill all the fields')
+            return;
+        }
+    } catch (error) {
+        res.status(400).send('Bad Request')
+    }
+
+    queries.Update(storesSchema, {"_id": req.body.idStore}, {
+        name: req.body.name,
+        logo: req.body.logo,
+        banner: req.body.banner,
+        category: req.body.category,
+    })
+        .then(result => {res.send(result)})
+        .catch(err => {res.status(500).send(err)})
+});
+
+app.delete('/deleteStore', (req, res) => {
+    try {
+        if(!req.body.idStore){
+            res.status(400).send('fill all the fields')
+            return;
+        }
+    } catch (error) {
+        res.status(400).send('Bad Request')
+    }
+
+    queries.Delete(storesSchema, {"_id": req.body.idStore})
+        .then(result => {res.send(result)})
+        .catch(err => {res.status(500).send(err)})
+});
 //stores request end
 
-//TODO: CRUD products
 //products request
 app.get('/products/:idStore', async (req, res) => {
     try {if(!req.params.idStore){throw new Error("oops")}
@@ -52,12 +144,109 @@ app.get('/products/:idStore', async (req, res) => {
     const store = await storesSchema.find({"_id": req.params.idStore});
     res.send(store[0].products)
 });
+
+app.post('/newProduct', async (req, res) => {
+    try {
+        if(!req.body.img || !req.body.price || !req.body.description || !req.body.idStore || !req.body.name){
+            res.status(400).send('fill all the fields')
+            return;
+        }
+    } catch (error) {
+        res.status(400).send('Bad Request')
+    }
+
+    let store = await storesSchema.find({"_id": req.body.idStore});
+    if (store.length === 0) {
+        res.status(400).send('Bad Request not store found')
+        return
+    }
+
+    const data = {
+        name: req.body.name,
+        img: req.body.img,
+        price: req.body.price,
+        description: req.body.description,
+    }
+
+    store[0].products.push(data)
+
+    queries.Update(storesSchema, {"_id": req.body.idStore}, store[0])
+        .then(result => {
+            res.send(result)
+        })
+        .catch(err => {res.status(500).send(err)})
+});
+
+app.delete('/deleteProduct', async (req, res) => {
+    try {
+        if(!req.body.idProduct){
+            res.status(400).send('fill all the fields')
+            return;
+        }
+    } catch (error) {
+        res.status(400).send('Bad Request')
+    }
+
+    let store = await storesSchema.find({"products._id": req.body.idProduct});
+    if (store.length === 0) {
+        res.status(400).send('Bad Request not product found')
+        return
+    }
+
+    let index = 0;
+    for (let i = 0; i < store[0].products.length; i++) {
+        if (store[0].products[i]["_id"].toString().normalize() === req.body.idProduct){
+            index = i;
+            break;
+        }
+    }
+
+    store[0].products.splice(index, 1);
+
+    queries.Update(storesSchema, {"_id": store[0]._id}, store[0])
+        .then(result => {res.send(result)})
+        .catch(err => {res.status(500).send(err)})
+
+
+});
+
+app.put('/updateProduct', async (req, res) => {
+    try {
+        if(!req.body.idProduct || !req.body.img || !req.body.price || !req.body.description || !req.body.name){
+            res.status(400).send('fill all the fields')
+            return;
+        }
+    } catch (error) {
+        res.status(400).send('Bad Request')
+    }
+
+    let store = await storesSchema.find({"products._id": req.body.idProduct});
+    if (store.length === 0) {
+        res.status(400).send('Bad Request not product found')
+        return
+    }
+
+    for (let i = 0; i < store[0].products.length; i++) {
+        if (store[0].products[i]["_id"].toString().normalize() === req.body.idProduct){
+            store[0].products[i] = {
+                name: req.body.name,
+                img: req.body.img,
+                price: req.body.price,
+                description: req.body.description,
+            }
+            break;
+        }
+    }
+
+    queries.Update(storesSchema, {"_id": store[0]._id}, store[0])
+        .then(result => {res.send(result)})
+        .catch(err => {res.status(500).send(err)})
+});
 //products request end
 
-//TODO: CRUD categories
 //categories request
 app.get('/categories', (req, res) => {
-    queries.getFromDB(categoriesSchema, {})
+    queries.Read(categoriesSchema, {})
         .then(result => {
             res.send(result)
         })
@@ -65,8 +254,79 @@ app.get('/categories', (req, res) => {
             res.status(500).send(err)
         })
 });
+
+app.post('/newCategory', async (req, res) => {
+    try {
+        if(!req.body.name || !req.body.color || !req.body.icon){
+            res.status(400).send('fill all the fields')
+            return;
+        }
+    } catch (error) {
+        res.status(400).send('Bad Request')
+    }
+    let cat = await categoriesSchema.find({"name": req.body.name});
+    if (cat.length > 0) {
+        res.status(400).send('category already exists ')
+        return
+    }
+
+    const data = {
+        name: req.body.name,
+        color: req.body.color,
+        icon: req.body.icon
+    }
+
+    queries.Create(categoriesSchema, data)
+        .then(result => {
+            res.send(result)
+        })
+        .catch(err => {res.status(500).send(err)})
+});
+
+app.put('/updateCategory', async (req, res) => {
+    try {
+        if(!req.body.idCategory || !req.body.name || !req.body.color || !req.body.icon){
+            res.status(400).send('fill all the fields')
+            return;
+        }
+    } catch (error) {
+        res.status(400).send('Bad Request')
+    }
+
+    let category = await categoriesSchema.find({"_id": req.body.idCategory});
+    if (category.length === 0) {
+        res.status(400).send('Bad Request not category found')
+        return
+    }
+
+    category[0] = {
+        name: req.body.name,
+        color: req.body.color,
+        icon: req.body.icon
+    }
+
+    queries.Update(categoriesSchema, {"_id": category[0]._id}, category[0])
+        .then(result => {res.send(result)})
+        .catch(err => {res.status(500).send(err)})
+});
+
+app.delete('/deleteCategory', (req, res) => {
+    try {
+        if(!req.body.idCategory){
+            res.status(400).send('fill all the fields')
+            return;
+        }
+    } catch (error) {
+        res.status(400).send('Bad Request')
+    }
+
+    queries.Delete(categoriesSchema, {"_id": req.body.idCategory})
+        .then(result => {res.send(result)})
+        .catch(err => {res.status(500).send(err)})
+});
 //categories request end
 
 //TODO: CRUD orders
+//TODO: CRUD roundsman
 
 module.exports = app

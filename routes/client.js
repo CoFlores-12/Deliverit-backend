@@ -42,7 +42,7 @@ app.post('/signin', async (req, res) => {
         password: req.body.password
     }
 
-    queries.insertInToDB(clientsSchema, data)
+    queries.Create(clientsSchema, data)
         .then(result => {
             res.setHeader('Set-Cookie', 'id='+result._id);
             res.send(result)
@@ -128,7 +128,7 @@ app.post('/CreateOrder', async (req, res) => {
         products:  req.body.products,
         locations: req.body.locations
     }
-    queries.insertInToDB(ordersSchema, data)
+    queries.Create(ordersSchema, data)
     res.send(data);
 });
 
