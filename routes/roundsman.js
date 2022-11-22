@@ -31,7 +31,11 @@ app.post('/register',  async (req, res) => {
         res.status(400).send('Bad Request')
         return
     }
-    let user = await roundsmanSchema.find({"phoneNumber": req.body.phoneNumber});
+    let user = await roundsmanSchema.find({
+        "$or":[
+                {"email":req.body.email},
+                {"phoneNumber": req.body.phoneNumber}
+    ]});
     if (user.length>0){
         res.status(400).send('User already exists')
         return;
