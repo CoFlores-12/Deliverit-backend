@@ -23,6 +23,7 @@
     "express": "^4.18.2",
     "express-session": "^1.17.3",
     "mongoose": "^6.7.2",
+    "node-cors": "^1.0.0",
     "nodejs-unique-numeric-id-generator": "^1.0.1"
   }
 }

@@ -3,7 +3,7 @@ const app      = express();
 const client   = require('./routes/client');
 const home     = require('./routes/home');
 const database = require('./modules/database');
-const roundsman = require('./models/roundsman');
+const roundsman = require('./routes/roundsman');
 const admin = require('./routes/admin')
 
 //config

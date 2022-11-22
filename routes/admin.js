@@ -10,6 +10,7 @@ const app   = express()
 app.use(bp.json())
 app.use(express.urlencoded({ extended: true }))
 
+//                                      CLIENTS
 //clients request
 app.get('/clients', (req, res) => {
     queries.Read(clientsSchema, {})
@@ -63,6 +64,7 @@ app.delete('/deleteClient', (req, res) => {
 });
 //clients request end
 
+//                                      STORES
 //stores request
 app.get('/stores', (req, res) => {
     queries.Read(storesSchema, {})
@@ -134,6 +136,7 @@ app.delete('/deleteStore', (req, res) => {
 });
 //stores request end
 
+//                                      PRODUCTS
 //products request
 app.get('/products/:idStore', async (req, res) => {
     try {if(!req.params.idStore){throw new Error("oops")}
@@ -244,6 +247,7 @@ app.put('/updateProduct', async (req, res) => {
 });
 //products request end
 
+//                                      CATEGORIES
 //categories request
 app.get('/categories', (req, res) => {
     queries.Read(categoriesSchema, {})
@@ -326,7 +330,18 @@ app.delete('/deleteCategory', (req, res) => {
 });
 //categories request end
 
+//                                      ORDER
 //TODO: CRUD orders
+        /* 
+        * get's (obtain all), (obtain a specific)
+        */
+        //assigned order to roundsman
+//                                      ROUNDSMAN
 //TODO: CRUD roundsman
+    /* activate/desactivate account
+    * get's (obtain all), (obtain a specific)
+    */
+    
+
 
 module.exports = app
