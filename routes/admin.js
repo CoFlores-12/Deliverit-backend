@@ -348,7 +348,7 @@ app.delete('/deleteCategory', (req, res) => {
 });
 //categories request end
 
-//                                      ORDER
+//                                      ORDERS
 
        //Obtain a history of orders 
 app.get('/history', (req, res)=>{
@@ -356,14 +356,14 @@ app.get('/history', (req, res)=>{
     .then(result=>{res.send(result)})
     .catch(err=>{res.status(500).send(err)}) 
 })
-//Obtain a order in specific
+        //Obtain a order in specific
 app.get('/order/:id', (req, res)=>{
 
     queries.Read(ordersSchema,{"id":req.params.id})
     .then(result=>{res.send(result)})
     .catch(err=>{res.status(500).send(err)}) 
 })
-//Obtain all the orders of client
+        //Obtain all the orders of client
 app.get('/orderOfClient', (req, res)=>{
 try {
     if(!req.body.id){
@@ -470,6 +470,7 @@ app.delete('/deleteRoundsman', async (req, res)=>{
 })
         // Update info  
 app.put('/updateDealer', async (req, res)=>{
+    
     try {
         if(!req.body.name || !req.body.email ||!req.body.password || !req.body.phoneNumber){
             res.status(400).send('Fill all the fields')
@@ -481,7 +482,7 @@ app.put('/updateDealer', async (req, res)=>{
     queries.Update(roundsmanSchema, {"_id":req.body.id},{
         name:req.body.name,
         email:req.body.email,
-        passowrd:req.body.passowrd,
+        password:req.body.password,
         phoneNumber:req.phoneNumber
     })
         .then(result => {res.send(result)})
