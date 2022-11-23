@@ -4,7 +4,10 @@ const schema = new mongoose.Schema({
     name: String,
     logo: String,
     banner: String,
-    category: String,
+    category: {
+        id: mongoose.SchemaTypes.ObjectId,
+        name: String
+    },
     products: [
         {
             name: String,

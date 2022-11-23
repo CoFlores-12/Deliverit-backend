@@ -13,7 +13,11 @@ const app   = express()
 app.use(bp.json())
 app.use(express.urlencoded({ extended: true }))
 
+
 //                                      CLIENTS
+app.get('/', (req, res) => {
+    res.send('ok')
+});
 //clients request
 app.get('/clients', (req, res) => {
     queries.Read(clientsSchema, {})
@@ -89,11 +93,16 @@ app.post('/newStore', async (req, res) => {
         res.status(400).send('Bad Request')
     }
 
+    const cat = await categoriesSchema.find({"_id": req.body.category})
+
     const data = {
         name: req.body.name,
         logo: req.body.logo,
         banner: req.body.banner,
-        category: req.body.category,
+        category: {
+            id: cat[0]._id,
+            name: cat[0].name
+        },
     }
 
     queries.Create(storesSchema, data)
@@ -105,19 +114,25 @@ app.post('/newStore', async (req, res) => {
 
 app.put('/updateStore', async (req, res) => {
     try {
+        console.log(req.body);
         if(!req.body.name || !req.body.logo || !req.body.banner || !req.body.category || !req.body.idStore){
             res.status(400).send('fill all the fields')
             return;
         }
     } catch (error) {
-        res.status(400).send('Bad Request')
+        res.status(400).send("field empty")
     }
+
+    const cat = await categoriesSchema.find({"_id": req.body.category})
 
     queries.Update(storesSchema, {"_id": req.body.idStore}, {
         name: req.body.name,
         logo: req.body.logo,
         banner: req.body.banner,
-        category: req.body.category,
+        category: {
+            id: cat[0]._id,
+            name: cat[0].name
+        },
     })
         .then(result => {res.send(result)})
         .catch(err => {res.status(500).send(err)})
