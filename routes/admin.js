@@ -2,10 +2,13 @@ const categoriesSchema = require('../models/categories')
 const storesSchema    = require('../models/stores')
 const clientsSchema = require('../models/clients')
 const ordersSchema = require('../models/orders')
+const roundsmanSchema = require('../models/roundsman')
 const queries    = require('../modules/queries')
 const bp       = require('body-parser')
 const express =  require('express')
+const roundsman = require('../models/roundsman')
 const app   = express()
+
 
 app.use(bp.json())
 app.use(express.urlencoded({ extended: true }))
@@ -334,16 +337,70 @@ app.delete('/deleteCategory', (req, res) => {
 //TODO: CRUD orders
         /* 
         * get's (obtain all), (obtain a specific)
+        * get order a client
+        * get 
         */
         //assigned order to roundsman
+
+
 //                                      ROUNDSMAN
-//TODO: CRUD roundsman
+//
 
+//Get all the roundsman
+app.get('/allTheRoundsman', async (req, res)=>{
 
-    /* activate/desactivate account
-    * get's (obtain all), (obtain a specific)
-    */
+    const dealers = await roundsmanSchema.find({})
+    res.send(dealers)
+})
+
+//get specific dealer
+app.get('/roundsman/:idDealer', async (req, res)=>{
+
+    try {
+        if(!req.params.id){
+            throw new Error("Dealer isn't exists")
+        }
+    } catch (error) {
+        res.status(400).send('Bad Request')
+        return;
+    }
+    const dealer = await roundsmanSchema.find({"_id": req.params.id})
+    res.send(dealer)
+})
+
+    // activate/desactivate dealer
+app.put('/roundsmanStatus', async(req, res)=>{
+    try {
+        if(!req.body.id){
+            throw new Error("Bad Request")
+        }
+    } catch (error) {
+        res.status(400).send('Bad Request')
+        return
+    }
+    const dealer = await roundsmanSchema.find({"_id": req.body.id})
+    if(dealer.length==0){
+        res.status(400).send('Dealer isnt exists')
+    }
+    dealer[0].active = !dealer[0].active
     
+    
+    queries.Update(roundsmanSchema,{"_id":req.body.id},dealer[0])
+    .then(result=>{res.send(result)})
+    .catch(err=>{res.status(500).send(err)})
+})
+        // Delete account
+app.delete('deleteRoundsman',  (req, res)=>{
+    try {
+        if(!req.body.id){
+            res.status(400)
+
+        }
+    } catch (error) {
+        res.status(400).send('Error')
+    }
+})
+        // Update info
 
 
 module.exports = app
