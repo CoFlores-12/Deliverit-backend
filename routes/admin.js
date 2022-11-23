@@ -349,7 +349,7 @@ app.delete('/deleteCategory', (req, res) => {
 //categories request end
 
 //                                      ORDER
-//TODO: CRUD orders
+
        //Obtain a history of orders 
 app.get('/history', (req, res)=>{
     queries.Read(ordersSchema,{})
@@ -456,17 +456,37 @@ app.put('/roundsmanStatus', async(req, res)=>{
     .catch(err=>{res.status(500).send(err)})
 })
         // Delete account
-app.delete('deleteRoundsman',  (req, res)=>{
+app.delete('/deleteRoundsman', async (req, res)=>{
     try {
         if(!req.body.id){
-            res.status(400)
-
+            res.status(400).send('Bad Request')
         }
     } catch (error) {
-        res.status(400).send('Error')
+        res.status(400).send('Bad Request')
     }
+    queries.Delete(roundsmanSchema, {"_id":req.body.id})
+        .then(result => {res.send(result)})
+        .catch(err => {res.status(500).send(err)})
 })
-        // Update info
+        // Update info  
+app.put('/updateDealer', async (req, res)=>{
+    try {
+        if(!req.body.name || !req.body.email ||!req.body.password || !req.body.phoneNumber){
+            res.status(400).send('Fill all the fields')
+            return;
+        }
+    } catch (error) {
+        res.status(400).send('Bad Request ')
+    }
+    queries.Update(roundsmanSchema, {"_id":req.body.id},{
+        name:req.body.name,
+        email:req.body.email,
+        passowrd:req.body.passowrd,
+        phoneNumber:req.phoneNumber
+    })
+        .then(result => {res.send(result)})
+        .catch(err => {res.status(500).send(err)})
+}) 
 
 
 module.exports = app
