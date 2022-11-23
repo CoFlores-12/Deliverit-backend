@@ -32,7 +32,7 @@ app.get('/client/:id', async (req, res) => {
         return;
     }
     const client = await clientsSchema.find({"_id": req.params.id});
-    res.send(client)
+    res.send(client[0])
 });
 app.put('/updateClient', async (req, res) => {
     try {
@@ -351,6 +351,7 @@ app.delete('/deleteCategory', (req, res) => {
         * get's (obtain all), (obtain a specific)
         */
         //assigned order to roundsman
+        //all orders of a client by ID {body: id}
 //                                      ROUNDSMAN
 //TODO: CRUD roundsman
 
