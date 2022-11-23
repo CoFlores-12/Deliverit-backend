@@ -3,7 +3,10 @@ const mongoose= require('mongoose');
 
 //scheme
 const schema = new mongoose.Schema({
-    status: String,
+    active:{
+        type:Boolean,
+        default:false
+    },
     name:String,
     email:String,
     password:String,
