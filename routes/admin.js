@@ -6,7 +6,6 @@ const roundsmanSchema = require('../models/roundsman')
 const queries    = require('../modules/queries')
 const bp       = require('body-parser')
 const express =  require('express')
-const roundsman = require('../models/roundsman')
 const app   = express()
 
 
@@ -103,6 +102,7 @@ app.post('/newStore', async (req, res) => {
             id: cat[0]._id,
             name: cat[0].name
         },
+        
     }
 
     queries.Create(storesSchema, data)
@@ -350,13 +350,63 @@ app.delete('/deleteCategory', (req, res) => {
 
 //                                      ORDER
 //TODO: CRUD orders
-        /* 
-        * get's (obtain all), (obtain a specific)
-        * get order a client
-        * get 
-        */
-        //assigned order to roundsman
+       //Obtain a history of orders 
+app.get('/history', (req, res)=>{
+    queries.Read(ordersSchema,{})
+    .then(result=>{res.send(result)})
+    .catch(err=>{res.status(500).send(err)}) 
+})
+//Obtain a order in specific
+app.get('/order/:id', (req, res)=>{
 
+    queries.Read(ordersSchema,{"id":req.params.id})
+    .then(result=>{res.send(result)})
+    .catch(err=>{res.status(500).send(err)}) 
+})
+//Obtain all the orders of client
+app.get('/orderOfClient', (req, res)=>{
+try {
+    if(!req.body.id){
+        throw new Error('Bad Request')
+    }
+    
+} catch (error) {
+    res.status(400).send('Bad Request')    
+}
+
+    queries.Read(ordersSchema,{"client.id":req.body.id})
+    .then(result=>{res.send(result)})
+    .catch(err=>{res.status(500).send(err)}) 
+})
+//assigned a roundsman to order
+app.put('/assigned', async (req, res)=>{
+    try {
+        if(!req.body.idDealer || !req.body.id){
+            throw new Error("This order is")
+        }
+        
+    } catch (error) {
+        res.status(400).send('Bad Request')
+    }
+
+    const dealer = await roundsmanSchema.find({"_id": req.body.idDealer})
+    if(dealer.length==0){
+        res.status(400).send('Bad Request')
+    }
+    const order = await ordersSchema.find({"id": req.body.id})
+    if(order.length==0){
+        res.status(400).send('Bad Request')
+    }
+    order[0].status = "Preparing"
+    order[0].dealer.id= dealer[0]._id
+    order[0].dealer.name = dealer[0].name
+    order[0].dealer.email = dealer[0].email
+    order[0].dealer.tel = dealer[0].tel
+
+    queries.Update(ordersSchema, {"id": req.body.id}, order[0])
+    .then(result => {res.send(result)})
+    .catch(err => {res.status(500).send(err)})
+})
 
 //                                      ROUNDSMAN
 //
@@ -382,6 +432,7 @@ app.get('/roundsman/:idDealer', async (req, res)=>{
     const dealer = await roundsmanSchema.find({"_id": req.params.id})
     res.send(dealer)
 })
+
 
     // activate/desactivate dealer
 app.put('/roundsmanStatus', async(req, res)=>{
