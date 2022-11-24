@@ -127,7 +127,7 @@ app.post('/CreateOrder', async (req, res) => {
             tel: null
         },
         products:  req.body.products,
-        locations: req.body.locations
+        locations: req.body.location
     }
     queries.Create(ordersSchema, data)
         .then(result => {res.send(result)})

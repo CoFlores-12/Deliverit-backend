@@ -81,7 +81,7 @@ app.post('/login', async(req, res)=>{
 app.get('/ordersName', async (req, res)=>{
     try {
         if(!req.cookies.id){
-            //throw new Error("user not logger")
+            throw new Error("user not logger")
         }
     } catch (error) {
         res.status(400).send('user not logger');
@@ -90,7 +90,7 @@ app.get('/ordersName', async (req, res)=>{
     
     const orders = await ordersSchema.find({
         $and: [
-            {"dealer.id": "637c40f8272209628647ee13"},
+            {"dealer.id": req.cookies.id},
             { $or: [
                 {"status": "Preparing"},
                 {"status": "OnTheWay"}
@@ -129,12 +129,12 @@ app.get('/getOrderInfo/:idOrder', async (req, res)=>{
         return;
     }
     const orders = await ordersSchema.find({"id": req.params.idOrder})
-    res.send(orders);
+    res.send(orders[0]);
 })
 //change status order take
 app.put('/takedOrder/:idOrder', async (req, res) => {
     try {
-        if(!req.params.idOrder || !req.cookies.id){
+        if(!req.params.idOrder || !req.body.id){
             throw new Error("Order isn't exists")
         }
     } catch (error) {
@@ -148,7 +148,7 @@ app.put('/takedOrder/:idOrder', async (req, res) => {
         return
     } 
 
-    const dealer = await roundsmanSchema.find({"_id": req.cookies.id})
+    const dealer = await roundsmanSchema.find({"_id": req.body.id})
 
     order[0].status = "Preparing"
     order[0].dealer.id = dealer[0]._id
