@@ -77,13 +77,14 @@ app.post('/login', async (req, res) => {
 //TODO: Auth APIs
 
 app.get('/orders', async (req, res) => {
-    try {if(!req.cookies.id){throw new Error("oops")}
+    try {
+        if(!req.cookies.id){throw new Error("oops")}
     }  catch (error) {
         res.status(403).send('Unauthenticated User')
         return
     }
     const orders = await ordersSchema.find({"client.id": req.cookies.id});
-    res.send(orders)
+    res.status(200).send(orders)
 });
 
 app.get('/orders/:idOrder', async (req, res) => {
@@ -93,19 +94,19 @@ app.get('/orders/:idOrder', async (req, res) => {
         return;
     }
     const orders = await ordersSchema.find({"id": req.params.idOrder});
-    res.send(orders)
+    res.send(orders[0])
 });
 
 app.post('/CreateOrder', async (req, res) => {
     try {
-        if(!req.cookies.id){
+        if(!req.body.idClient){
             throw new Error("oops");
         }
     }  catch (error) {
         res.status(403).send('Unauthenticated User')
         return;
     }
-    const user = await clientsSchema.find({"_id": req.cookies.id});
+    const user = await clientsSchema.find({"_id": req.body.idClient});
     const ID = require("nodejs-unique-numeric-id-generator")
     const data = {
         id: ID.generate(new Date().toJSON()),
@@ -129,7 +130,8 @@ app.post('/CreateOrder', async (req, res) => {
         locations: req.body.locations
     }
     queries.Create(ordersSchema, data)
-    res.send(data);
+        .then(result => {res.send(result)})
+        .catch(err => {res.status(500).send(err)})
 });
 
 module.exports = app

@@ -17,7 +17,6 @@
           }).done(function (response) {
               console.log(response);
               document.cookie = 'username='+response.username+'; expire=31536000;';
-              document.cookie = 'id='+response._id+'; expire=31536000;';;
               createOrder()
               $.get("http://localhost:3000/client/test",
                 function (data, textStatus, jqXHR) {

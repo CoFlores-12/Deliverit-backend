@@ -13,13 +13,18 @@ app.get('/categories', (req, res) => {
         .then(result => res.send(result))
         .catch(err => res.status(500).send(err))
 })
+app.get('/categories/:id', (req, res) => {
+    queries.Read(categorieschema, {"_id": req.params.id})
+        .then(result => res.send(result))
+        .catch(err => res.status(500).send(err))
+})
 
 app.get('/stores/:idCategory', async (req, res) => {
     try {req.params.idCategory} catch (error) {
         res.status(400).send('Bad Request')
     }
     const stores = await storeschema
-                    .find({"category": req.params.idCategory})
+                    .find({"category.id": req.params.idCategory})
                     .select('name logo banner')
     res.send(stores)
 });
