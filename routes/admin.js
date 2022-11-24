@@ -482,7 +482,7 @@ app.delete('/deleteRoundsman', async (req, res)=>{
 app.put('/updateDealer', async (req, res)=>{
     
     try {
-        if(!req.body.name || !req.body.email ||!req.body.password || !req.body.phoneNumber){
+        if(!req.body.name || !req.body.email || !req.body.phoneNumber){
             res.status(400).send('Fill all the fields')
             return;
         }
@@ -492,7 +492,6 @@ app.put('/updateDealer', async (req, res)=>{
     queries.Update(roundsmanSchema, {"_id":req.body.id},{
         name:req.body.name,
         email:req.body.email,
-        password:req.body.password,
         phoneNumber:req.phoneNumber
     })
         .then(result => {res.send(result)})
