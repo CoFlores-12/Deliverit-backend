@@ -417,6 +417,17 @@ app.get('/allTheRoundsman', async (req, res)=>{
     const dealers = await roundsmanSchema.find({})
     res.send(dealers)
 })
+// search for dealer by name, email or phone
+app.get('/searchRoundsman/:data', async(req, res)=>{
+    
+    
+    const dealer = await roundsmanSchema.find({
+        $or:[{"name":data},
+            {"email":data},
+            {"phoneNumber":data}
+    ]})
+    res.send(dealer)
+})
 
 //get specific dealer
 app.get('/roundsman/:idDealer', async (req, res)=>{
