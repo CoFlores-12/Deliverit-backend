@@ -360,23 +360,23 @@ app.get('/history', (req, res)=>{
 app.get('/order/:id', (req, res)=>{
 
     queries.Read(ordersSchema,{"id":req.params.id})
-    .then(result=>{res.send(result)})
+    .then(result=>{res.send(result[0])})
     .catch(err=>{res.status(500).send(err)}) 
 })
 //Obtain all the orders of client
-app.get('/orderOfClient', (req, res)=>{
-try {
-    if(!req.body.id){
-        throw new Error('Bad Request')
+app.get('/orderOfClient/:id', (req, res)=>{
+    try {
+        if(!req.params.id){
+            throw new Error('Bad Request')
+        }
+    } catch (error) {
+        res.status(400).send('Bad Request') 
+        return   
     }
-    
-} catch (error) {
-    res.status(400).send('Bad Request')    
-}
 
-    queries.Read(ordersSchema,{"client.id":req.body.id})
-    .then(result=>{res.send(result)})
-    .catch(err=>{res.status(500).send(err)}) 
+    queries.Read(ordersSchema,{"client.id":req.params.id})
+        .then(result=>{res.send(result)})
+        .catch(err=>{res.status(500).send(err)}) 
 })
 //assigned a roundsman to order
 app.put('/assigned', async (req, res)=>{
