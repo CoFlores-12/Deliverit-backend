@@ -154,7 +154,7 @@ app.put('/takedOrder/:idOrder', async (req, res) => {
     order[0].dealer.id = dealer[0]._id
     order[0].dealer.name = dealer[0].name
     order[0].dealer.email = dealer[0].email
-    order[0].dealer.tel = dealer[0].tel
+    order[0].dealer.tel = dealer[0].phoneNumber
 
     queries.Update(ordersSchema, {"id": req.params.idOrder}, order[0])
         .then(result => {res.send(result)})
