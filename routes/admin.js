@@ -401,7 +401,7 @@ app.put('/assigned', async (req, res)=>{
     order[0].dealer.id= dealer[0]._id
     order[0].dealer.name = dealer[0].name
     order[0].dealer.email = dealer[0].email
-    order[0].dealer.tel = dealer[0].tel
+    order[0].dealer.tel = dealer[0].phoneNumber
 
     queries.Update(ordersSchema, {"id": req.body.id}, order[0])
     .then(result => {res.send(result)})
@@ -420,11 +420,10 @@ app.get('/allTheRoundsman', async (req, res)=>{
 // search for dealer by name, email or phone
 app.get('/searchRoundsman/:data', async(req, res)=>{
     
-    
     const dealer = await roundsmanSchema.find({
-        $or:[{"name":data},
-            {"email":data},
-            {"phoneNumber":data}
+        $or:[{"name":req.params.data},
+            {"email":req.params.data},
+            {"phoneNumber":req.params.data}
     ]})
     res.send(dealer)
 })
