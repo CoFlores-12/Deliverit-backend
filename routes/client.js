@@ -76,18 +76,18 @@ app.post('/login', async (req, res) => {
 
 //TODO: Auth APIs
 
-app.get('/orders', async (req, res) => {
+app.get('/orders/:id', async (req, res) => {
     try {
-        if(!req.cookies.id){throw new Error("oops")}
+        if(!req.params.id){throw new Error("oops")}
     }  catch (error) {
         res.status(403).send('Unauthenticated User')
         return
     }
-    const orders = await ordersSchema.find({"client.id": req.cookies.id});
+    const orders = await ordersSchema.find({"client.id": req.params.id});
     res.status(200).send(orders)
 });
 
-app.get('/orders/:idOrder', async (req, res) => {
+app.get('/order/:idOrder', async (req, res) => {
     try {if(!req.params.idOrder){throw new Error("oops")}
     }  catch (error) {
         res.status(400).send('Bad Request')
