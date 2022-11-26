@@ -87,7 +87,7 @@ app.get('/orders/:id', async (req, res) => {
     res.status(200).send(orders)
 });
 
-app.get('/orders/:idOrder', async (req, res) => {
+app.get('/order/:idOrder', async (req, res) => {
     try {if(!req.params.idOrder){throw new Error("oops")}
     }  catch (error) {
         res.status(400).send('Bad Request')
