@@ -71,16 +71,16 @@ app.post('/login', async(req, res)=>{
         return;
     }
     if(user[0].password==req.body.password){
-        res.setHeader('Set-Cookie', 'id='+user[0]._id);
+        res.setHeader('Set-Cookie', 'idRoundsman='+user[0]._id);
         res.send(user[0]);   
     }else{
         res.status(400).send("error credentials")
     }
 })
 // get orders in my name in progress
-app.get('/ordersName', async (req, res)=>{
+app.get('/ordersName/:idRoundsman', async (req, res)=>{
     try {
-        if(!req.cookies.idRoundsman){
+        if(!req.params.idRoundsman){
             throw new Error("user not logger")
         }
     } catch (error) {
@@ -90,7 +90,7 @@ app.get('/ordersName', async (req, res)=>{
     
     const orders = await ordersSchema.find({
         $and: [
-            {"dealer.id": req.cookies.idRoundsman},
+            {"dealer.id": req.params.idRoundsman},
             { $or: [
                 {"status": "Preparing"},
                 {"status": "OnTheWay"}
@@ -106,16 +106,16 @@ app.get('/ordersAvailables', async (req, res)=>{
     res.send(orders);
 })
 // get history orders delivered
-app.get('/ordersCompleted', async (req, res)=>{
+app.get('/ordersCompleted/:idRoundsman', async (req, res)=>{
     try {
-        if(!req.cookies.idRoundsman ){
+        if(!req.params.idRoundsman ){
             throw new Error("You don't have  orders")
         }
     } catch (error) {
         res.status(400).send('Bad Request');
         return;
     }
-    const orders = await ordersSchema.find({"dealer.id": req.cookies.idRoundsman,"status": "Delivered"});
+    const orders = await ordersSchema.find({"dealer.id": req.params.idRoundsman,"status": "Delivered"});
     res.send(orders);
 })
 // get info a order specific
