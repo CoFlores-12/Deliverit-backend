@@ -9,8 +9,8 @@ class Database {
     }
 
     connect(){
-        mongoose.connect(`mongodb://${host}:${port}/${db}`)
-            .then(() => {console.log('connected to Database')})
+        mongoose.connect(`mongodb+srv://unah:is410@deliverit.elvsi2t.mongodb.net/?retryWrites=true&w=majority`)
+            .then(() => {console.log('connected to Database in mongoDB Atlas')})
             .catch(err => {console.log(err)})
     }
 }
