@@ -55,7 +55,6 @@ app.post('/register',  async (req, res) => {
 });
 
 app.post('/login', async(req, res)=>{
-    
     try{
         if(!req.body.phoneNumber || !req.body.password){
             res.status(400).send('Fill all the fields')
@@ -64,8 +63,11 @@ app.post('/login', async(req, res)=>{
     }catch(error){
         res.status(400).send('Bad Request')
     }
-
     let user = await roundsmanSchema.find({"phoneNumber": req.body.phoneNumber});
+    if(user[0].active!=true){
+        res.status(403).send('user is not active')
+        return;
+    }
     if (user.length==0){
         res.status(400).send('User  is not found')
         return;
@@ -142,13 +144,16 @@ app.put('/takedOrder/:idOrder', async (req, res) => {
         return;
     }
     const order = await ordersSchema.find({"id": req.params.idOrder})
-
-    if (order[0].status != 'Received') {
+    const dealer = await roundsmanSchema.find({"_id": req.body.id})
+    if (order[0].status != 'Received' ) {
         res.status(400).send("bad request")
         return
     } 
+    if(!dealer[0].active){
+        res.status(403).send('user not active')
+        return;
+    }
 
-    const dealer = await roundsmanSchema.find({"_id": req.body.id})
 
     order[0].status = "Preparing"
     order[0].dealer.id = dealer[0]._id
