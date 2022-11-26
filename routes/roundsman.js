@@ -80,7 +80,7 @@ app.post('/login', async(req, res)=>{
 // get orders in my name in progress
 app.get('/ordersName', async (req, res)=>{
     try {
-        if(!req.cookies.id){
+        if(!req.cookies.idRoundsman){
             throw new Error("user not logger")
         }
     } catch (error) {
@@ -90,7 +90,7 @@ app.get('/ordersName', async (req, res)=>{
     
     const orders = await ordersSchema.find({
         $and: [
-            {"dealer.id": req.cookies.id},
+            {"dealer.id": req.cookies.idRoundsman},
             { $or: [
                 {"status": "Preparing"},
                 {"status": "OnTheWay"}
@@ -108,14 +108,14 @@ app.get('/ordersAvailables', async (req, res)=>{
 // get history orders delivered
 app.get('/ordersCompleted', async (req, res)=>{
     try {
-        if(!req.cookies.id ){
+        if(!req.cookies.idRoundsman ){
             throw new Error("You don't have  orders")
         }
     } catch (error) {
         res.status(400).send('Bad Request');
         return;
     }
-    const orders = await ordersSchema.find({"dealer.id": req.cookies.id,"status": "Delivered"});
+    const orders = await ordersSchema.find({"dealer.id": req.cookies.idRoundsman,"status": "Delivered"});
     res.send(orders);
 })
 // get info a order specific
