@@ -9,13 +9,15 @@ MongoDB 6.0.2 Community Server
 
 URL:
 mongodb://localhost:27017/Deliverit
-> start
+> name database
 ```
-sudo service mongod start
-```
-> stop
-```
-sudo service mongod stop
+use Deliverit
 ```
 
+
+## for first use
+To create collections with previous documents execute the following command:
+```
+node init.js
+```
 

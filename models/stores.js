@@ -4,6 +4,10 @@ const schema = new mongoose.Schema({
     name: String,
     logo: String,
     banner: String,
+    location: {
+        lat: Number,
+        lng: Number
+      },
     category: {
         id: mongoose.SchemaTypes.ObjectId,
         name: String

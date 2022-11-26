@@ -98,6 +98,10 @@ app.post('/newStore', async (req, res) => {
         name: req.body.name,
         logo: req.body.logo,
         banner: req.body.banner,
+        location: {
+            lat: req.body.location.lat,
+            lng: req.body.location.lng
+          },
         category: {
             id: cat[0]._id,
             name: cat[0].name
@@ -129,6 +133,10 @@ app.put('/updateStore', async (req, res) => {
         name: req.body.name,
         logo: req.body.logo,
         banner: req.body.banner,
+        location: {
+            lat: req.body.location.lat,
+            lng: req.body.location.lng
+          },
         category: {
             id: cat[0]._id,
             name: cat[0].name
