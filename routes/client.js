@@ -76,14 +76,14 @@ app.post('/login', async (req, res) => {
 
 //TODO: Auth APIs
 
-app.get('/orders', async (req, res) => {
+app.get('/orders/:id', async (req, res) => {
     try {
-        if(!req.cookies.id){throw new Error("oops")}
+        if(!req.params.id){throw new Error("oops")}
     }  catch (error) {
         res.status(403).send('Unauthenticated User')
         return
     }
-    const orders = await ordersSchema.find({"client.id": req.cookies.id});
+    const orders = await ordersSchema.find({"client.id": req.params.id});
     res.status(200).send(orders)
 });
 
