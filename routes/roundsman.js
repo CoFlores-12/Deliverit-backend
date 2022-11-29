@@ -64,12 +64,12 @@ app.post('/login', async(req, res)=>{
         res.status(400).send('Bad Request')
     }
     let user = await roundsmanSchema.find({"phoneNumber": req.body.phoneNumber});
-    if(user[0].active!=true){
-        res.status(403).send('user is not active')
-        return;
-    }
     if (user.length==0){
         res.status(400).send('User  is not found')
+        return;
+    }
+    if(user[0].active!=true){
+        res.status(403).send('user is not active')
         return;
     }
     if(user[0].password==req.body.password){
